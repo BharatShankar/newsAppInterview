@@ -10,4 +10,5 @@ class AppStrings {
 class AppColors {
   static const Color listviewBackGroundColor = Color(0xff464646);
   static const Color textWhiteColor = Color(0xfff2f2f2);
+  static const Color subTextWhiteColor = Color(0xffbababa);
 }

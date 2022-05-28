@@ -6,8 +6,7 @@ import 'package:news_interview/bloc/news_bloc/article_state.dart';
 import 'package:news_interview/detail_news.dart';
 import 'package:news_interview/models/api_model.dart';
 import 'package:news_interview/strings.dart';
-
-//https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c9be829b24324127a8f35053d445ed22
+import 'package:news_interview/utils/utilities.dart';
 
 class HeadLinesScreen extends StatefulWidget {
   const HeadLinesScreen({Key? key}) : super(key: key);
@@ -29,8 +28,9 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black54,
         title: const Center(
           child: Text(
             "HEADLINES",
@@ -43,33 +43,31 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: BlocListener<ArticleBloc, ArticleState>(
-          listener: (context, state) {
-            if (state is ArticleErrorState) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message ?? ''),
-                ),
-              );
+      body: BlocListener<ArticleBloc, ArticleState>(
+        listener: (context, state) {
+          if (state is ArticleErrorState) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? ''),
+              ),
+            );
+          }
+        },
+        child: BlocBuilder<ArticleBloc, ArticleState>(
+          builder: (context, state) {
+            if (state is ArticleInitialState) {
+              return buildLoading();
+            } else if (state is ArticleLoadingState) {
+              return buildLoading();
+            } else if (state is ArticleLoadedState) {
+              return buildArticleList(state.articles ?? []);
+            } else if (state is ArticleErrorState) {
+              return buildErrorUi(state.message ?? '');
             }
+            return Container(
+              color: Colors.green,
+            );
           },
-          child: BlocBuilder<ArticleBloc, ArticleState>(
-            builder: (context, state) {
-              if (state is ArticleInitialState) {
-                return buildLoading();
-              } else if (state is ArticleLoadingState) {
-                return buildLoading();
-              } else if (state is ArticleLoadedState) {
-                return buildArticleList(state.articles ?? []);
-              } else if (state is ArticleErrorState) {
-                return buildErrorUi(state.message ?? '');
-              }
-              return Container(
-                color: Colors.green,
-              );
-            },
-          ),
         ),
       ),
     );
@@ -101,7 +99,7 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
       color: AppColors.listviewBackGroundColor,
       child: ListView.builder(
         itemCount: articles.length,
-        itemBuilder: (ctx, pos) {
+        itemBuilder: (ctx, index) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
             child: InkWell(
@@ -112,13 +110,13 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
                       alignment: AlignmentDirectional.bottomCenter,
                       children: [
                         Hero(
-                          tag: articles[pos].urlToImage ?? '',
+                          tag: articles[index].urlToImage ?? '',
                           child: Container(
                             foregroundDecoration: const BoxDecoration(
                               color: Colors.black54,
                             ),
                             child: Image.network(
-                              articles[pos].urlToImage ?? '',
+                              articles[index].urlToImage ?? '',
                               errorBuilder: (BuildContext context,
                                   Object exception, StackTrace? stackTrace) {
                                 return Image.asset(
@@ -130,16 +128,52 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(articles[pos].title ?? '',
-                              style: const TextStyle(
-                                color: AppColors.textWhiteColor,
-                                fontFamily: 'Roboto Slab',
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.normal,
-                              )),
-                        ),
+                        Column(
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                articles[index].title ?? '',
+                                style: const TextStyle(
+                                  color: AppColors.textWhiteColor,
+                                  fontFamily: 'Roboto Slab',
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 24, horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    articles[index].source?.name ?? '',
+                                    style: const TextStyle(
+                                      fontFamily: 'Roboto Slab',
+                                      fontSize: 12.0,
+                                      color: AppColors.subTextWhiteColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    getFormatedDate(
+                                        articles[index].publishedAt ?? ''),
+                                    style: const TextStyle(
+                                      fontFamily: 'Roboto Slab',
+                                      fontSize: 12.0,
+                                      color: AppColors.subTextWhiteColor,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                     decoration: BoxDecoration(
@@ -157,7 +191,10 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
                 ],
               ),
               onTap: () {
-                navigateToNewsDetailPage(context, articles[pos]);
+                navigateToNewsDetailPage(
+                  context,
+                  articles[index],
+                );
               },
             ),
           );

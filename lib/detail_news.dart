@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:news_interview/models/api_model.dart';
 import 'package:news_interview/strings.dart';
+import 'package:news_interview/utils/utilities.dart';
 
 class DetailNewsPage extends StatelessWidget {
   Articles? article;
@@ -11,10 +12,6 @@ class DetailNewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.black,
-      //   title: const Text("Flutter News App"),
-      // ),
       body: Column(
         children: [
           Stack(
@@ -55,7 +52,10 @@ class DetailNewsPage extends StatelessWidget {
                     children: [
                       Container(
                         alignment: Alignment.center,
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 64,
+                        ),
                         child: Text(
                           article?.title ?? '',
                           style: const TextStyle(
@@ -67,21 +67,41 @@ class DetailNewsPage extends StatelessWidget {
                       ),
                       Container(
                         alignment: Alignment.topRight,
-                        margin: const EdgeInsets.all(5.0),
-                        child: Text(
-                          article?.publishedAt ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              article?.author ?? '',
+                              style: const TextStyle(
+                                fontFamily: 'Roboto Slab',
+                                fontSize: 20.0,
+                                color: AppColors.textWhiteColor,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                            Text(
+                              getFormatedDate(article?.publishedAt ?? ''),
+                              style: const TextStyle(
+                                fontFamily: 'Roboto Slab',
+                                fontSize: 20.0,
+                                color: AppColors.textWhiteColor,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 24),
                         child: Text(
                           article?.content ?? '',
                           style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
+                            fontFamily: 'Roboto Slab',
+                            fontSize: 14.0,
+                            color: AppColors.subTextWhiteColor,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
                       ),
