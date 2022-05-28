@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_interview/bloc/news_bloc/article_bloc.dart';
 import 'package:news_interview/bloc/news_bloc/article_event.dart';
+import 'package:news_interview/bloc/news_bloc/article_state.dart';
+import 'package:news_interview/detail_news.dart';
+import 'package:news_interview/models/api_model.dart';
+import 'package:news_interview/strings.dart';
 
 //https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=c9be829b24324127a8f35053d445ed22
 
@@ -40,53 +44,133 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
         ),
       ),
       body: SafeArea(
-        child: Container(
-          child: Column(
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.black.withAlpha(200),
-                  child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 10),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10),
-                            decoration: BoxDecoration(
-                              // border: Border.all(
-                              //   width: 2.0
-                              // ),
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                      10.0) //                 <--- border radius here
-                                  ),
-                            ),
-                            width: MediaQuery.of(context).size.width - 20,
-                            child: Column(
-                              children: const [
-                                Text(
-                                  "this is headlines of news this is headlines of news  this is headlines of news this is headlines of news this is headlines of news ",
-                                  style: TextStyle(
-                                    fontFamily: 'Roboto Slab',
-                                    fontSize: 19.0,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
+        child: BlocListener<ArticleBloc, ArticleState>(
+          listener: (context, state) {
+            if (state is ArticleErrorState) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message ?? ''),
                 ),
-              ),
-            ],
+              );
+            }
+          },
+          child: BlocBuilder<ArticleBloc, ArticleState>(
+            builder: (context, state) {
+              if (state is ArticleInitialState) {
+                return buildLoading();
+              } else if (state is ArticleLoadingState) {
+                return buildLoading();
+              } else if (state is ArticleLoadedState) {
+                return buildArticleList(state.articles ?? []);
+              } else if (state is ArticleErrorState) {
+                return buildErrorUi(state.message ?? '');
+              }
+              return Container(
+                color: Colors.green,
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  Widget buildLoading() {
+    return const Center(
+      child: CircularProgressIndicator(
+        color: Colors.redAccent,
+        value: 10,
+      ),
+    );
+  }
+
+  Widget buildErrorUi(String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          message,
+          style: const TextStyle(color: Colors.red),
+        ),
+      ),
+    );
+  }
+
+  Widget buildArticleList(List<Articles> articles) {
+    return Container(
+      color: AppColors.listviewBackGroundColor,
+      child: ListView.builder(
+        itemCount: articles.length,
+        itemBuilder: (ctx, pos) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: InkWell(
+              child: Stack(
+                children: [
+                  Container(
+                    child: Stack(
+                      alignment: AlignmentDirectional.bottomCenter,
+                      children: [
+                        Hero(
+                          tag: articles[pos].urlToImage ?? '',
+                          child: Container(
+                            foregroundDecoration: const BoxDecoration(
+                              color: Colors.black54,
+                            ),
+                            child: Image.network(
+                              articles[pos].urlToImage ?? '',
+                              errorBuilder: (BuildContext context,
+                                  Object exception, StackTrace? stackTrace) {
+                                return Image.asset(
+                                  AppStrings.noNewsImg,
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(articles[pos].title ?? '',
+                              style: const TextStyle(
+                                color: AppColors.textWhiteColor,
+                                fontFamily: 'Roboto Slab',
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.normal,
+                              )),
+                        ),
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 7,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
+              onTap: () {
+                navigateToNewsDetailPage(context, articles[pos]);
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void navigateToNewsDetailPage(BuildContext context, Articles article) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return DetailNewsPage(
+        article: article,
+      );
+    }));
   }
 }
