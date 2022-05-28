@@ -20,7 +20,8 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
         List<Articles>? articles = await repository?.getArticles();
         yield ArticleLoadedState(articles: articles ?? []);
       } catch (e) {
-        yield ArticleErrorState(message: e.toString());
+        List<Articles>? articles = await repository?.getSavedData();
+        yield ArticleErrorState(articles ?? [], message: e.toString());
       }
     }
   }

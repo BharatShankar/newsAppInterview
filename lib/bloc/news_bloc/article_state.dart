@@ -25,9 +25,19 @@ class ArticleLoadedState extends ArticleState {
   List<Object> get props => throw UnimplementedError();
 }
 
+class ArticleOfflineState extends ArticleState {
+  List<Articles>? articles;
+  ArticleOfflineState({@required this.articles});
+
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+}
+
 class ArticleErrorState extends ArticleState {
   String? message;
-  ArticleErrorState({@required this.message});
+  List<Articles>? articles;
+  ArticleErrorState(this.articles, {@required this.message});
   @override
   // TODO: implement props
   List<Object> get props => throw UnimplementedError();
