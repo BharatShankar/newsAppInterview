@@ -5,7 +5,7 @@ import 'package:news_interview/bloc/news_bloc/article_event.dart';
 import 'package:news_interview/bloc/news_bloc/article_state.dart';
 import 'package:news_interview/detail_news.dart';
 import 'package:news_interview/models/api_model.dart';
-import 'package:news_interview/strings.dart';
+import 'package:news_interview/utils/strings.dart';
 import 'package:news_interview/utils/utilities.dart';
 
 class HeadLinesScreen extends StatefulWidget {
@@ -64,9 +64,7 @@ class _HeadLinesScreenState extends State<HeadLinesScreen> {
             } else if (state is ArticleErrorState) {
               return buildErrorUi(state.message ?? '');
             }
-            return Container(
-              color: Colors.green,
-            );
+            return Container(color: Colors.grey);
           },
         ),
       ),

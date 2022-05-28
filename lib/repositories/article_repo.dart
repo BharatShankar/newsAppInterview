@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:news_interview/models/api_model.dart';
-import 'package:news_interview/strings.dart';
+import 'package:news_interview/utils/strings.dart';
 
 abstract class ArticleRepository {
   Future<List<Articles>> getArticles();

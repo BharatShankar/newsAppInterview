@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:news_interview/models/api_model.dart';
-import 'package:news_interview/strings.dart';
+import 'package:news_interview/utils/strings.dart';
 import 'package:news_interview/utils/utilities.dart';
 
 class DetailNewsPage extends StatelessWidget {
@@ -71,13 +71,15 @@ class DetailNewsPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              article?.author ?? '',
-                              style: const TextStyle(
-                                fontFamily: 'Roboto Slab',
-                                fontSize: 20.0,
-                                color: AppColors.textWhiteColor,
-                                fontWeight: FontWeight.normal,
+                            Expanded(
+                              child: Text(
+                                article?.author ?? '',
+                                style: const TextStyle(
+                                  fontFamily: 'Roboto Slab',
+                                  fontSize: 20.0,
+                                  color: AppColors.textWhiteColor,
+                                  fontWeight: FontWeight.normal,
+                                ),
                               ),
                             ),
                             Text(
