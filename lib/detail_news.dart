@@ -11,7 +11,7 @@ class DetailNewsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           Stack(
@@ -42,48 +42,32 @@ class DetailNewsPage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Container(
-                  // decoration: const BoxDecoration(
-                  //     gradient: LinearGradient(
-                  //         begin: Alignment.topCenter,
-                  //         end: Alignment.bottomCenter,
-                  //         colors: [Colors.black, Colors.grey])),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 64,
-                        ),
-                        child: Text(
-                          article?.title ?? '',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 64,
+                      ),
+                      child: Text(
+                        article?.title ?? '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.topRight,
-                        margin: const EdgeInsets.symmetric(horizontal: 24),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                article?.author ?? '',
-                                style: const TextStyle(
-                                  fontFamily: 'Roboto Slab',
-                                  fontSize: 20.0,
-                                  color: AppColors.textWhiteColor,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              getFormatedDate(article?.publishedAt ?? ''),
+                    ),
+                    Container(
+                      alignment: Alignment.topRight,
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              article?.author ?? '',
                               style: const TextStyle(
                                 fontFamily: 'Roboto Slab',
                                 fontSize: 20.0,
@@ -91,24 +75,33 @@ class DetailNewsPage extends StatelessWidget {
                                 fontWeight: FontWeight.normal,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 16, horizontal: 24),
-                        child: Text(
-                          article?.content ?? '',
-                          style: const TextStyle(
-                            fontFamily: 'Roboto Slab',
-                            fontSize: 14.0,
-                            color: AppColors.subTextWhiteColor,
-                            fontWeight: FontWeight.normal,
                           ),
+                          Text(
+                            getFormatedDate(article?.publishedAt ?? ''),
+                            style: const TextStyle(
+                              fontFamily: 'Roboto Slab',
+                              fontSize: 20.0,
+                              color: AppColors.textWhiteColor,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 24),
+                      child: Text(
+                        article?.content ?? '',
+                        style: const TextStyle(
+                          fontFamily: 'Roboto Slab',
+                          fontSize: 14.0,
+                          color: AppColors.subTextWhiteColor,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Positioned(
